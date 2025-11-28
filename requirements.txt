@@ -1,0 +1,9 @@
+pillow
+numpy
+ale-py==0.9.0
+gymnasium==1.2.2
+AutoROM==0.6.1
+torch==2.2.2
+matplotlib
+PyYAML
+autorom
