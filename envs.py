@@ -150,57 +150,74 @@ def reward_config_from_dict(cfg: Dict) -> RewardConfig:
 
 class CustomRewardWrapper(Wrapper):
     """
-    Reward shaping for Tetris:
+    Simple, robust reward shaping for Tetris (ALE/Tetris-v5):
 
-    - base ALE reward is the score delta from the env (`reward`)
-    - add a small per-step survival bonus
-    - add a moderate penalty on terminal, but not huge
+    - env_reward is the ALE score delta
+    - each step:
+        * small positive survival_reward
+        * if no score change: add no_progress_penalty (small negative)
+        * if score increased: add score_weight * reward_scale * env_reward
+    - on terminal: add a large negative termination_penalty
+
+    Only env_reward is scaled by reward_scale. Everything else (survival, penalties)
+    stays in your own shaping units.
     """
 
     def __init__(
-            self,
-            env: gym.Env,
-            reward_scale: float = 1.0,
-            score_weight: float = 1.0,
-            survival_reward: float = 0.1,
-            termination_penalty: float = -20.0,
+        self,
+        env: gym.Env,
+        reward_scale: float = 1.0,
+        score_weight: float = 5.0,
+        survival_reward: float = 0.5,
+        no_progress_penalty: float = -0.05,
+        termination_penalty: float = -50.0,
     ):
         super().__init__(env)
         self.reward_scale = reward_scale
         self.score_weight = score_weight
         self.survival_reward = survival_reward
+        self.no_progress_penalty = no_progress_penalty
         self.termination_penalty = termination_penalty
 
+        # If you want to track cumulative score from info["score"], you can,
+        # but for ALE Tetris, env_reward is usually already the score delta.
         self.last_score = 0
 
     def step(self, action):
-        obs, reward, terminated, truncated, info = self.env.step(action)
+        obs, env_reward, terminated, truncated, info = self.env.step(action)
 
-        current_score = info.get("score", self.last_score)
+        # Use ALE score if provided, otherwise just trust env_reward as the delta.
+        current_score = info.get("score", self.last_score + env_reward)
         score_increase = max(0, current_score - self.last_score)
 
-        # Base env reward is usually already score_delta, but we'll treat it generically
-        modified_reward = self.reward_scale * reward
+        # Start with survival reward every step
+        shaped = self.survival_reward
 
-        # Reward making progress
-        modified_reward += self.score_weight * score_increase
+        if score_increase > 0:
+            # Scoring step (line clears / Tetris rewards)
+            # Only env_reward / score_increase gets scaled.
+            shaped += self.score_weight * self.reward_scale * score_increase
+        else:
+            # No progress this step → small penalty so stalling is suboptimal
+            shaped += self.no_progress_penalty
 
-        # Reward surviving one more step
-        modified_reward += self.survival_reward
-
-        # Penalize terminal, but not so hard it dwarfs everything else
+        # Big negative at real terminal (game over, not just truncation)
         if terminated:
-            modified_reward += self.termination_penalty
+            shaped += self.termination_penalty
 
+        # Update score tracker
         self.last_score = current_score
-        return obs, modified_reward, terminated, truncated, info
+
+        # Reset score tracker on any episode end
+        if terminated or truncated:
+            self.last_score = 0
+
+        return obs, shaped, terminated, truncated, info
 
     def reset(self, **kwargs):
         obs, info = self.env.reset(**kwargs)
         self.last_score = info.get("score", 0)
         return obs, info
-
-
 
 def make_training_env(env_cfg: EnvConfig, reward_cfg: RewardConfig) -> gym.Env:
     """
