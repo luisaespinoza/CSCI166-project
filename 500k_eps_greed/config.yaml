@@ -1,0 +1,58 @@
+env:
+  gym_id: "ALE/Tetris-v5"
+  frameskip: 1
+  grayscale_obs: true
+  screen_size: 84
+  frame_stack: 4
+
+  # vectorized Atari setup (for replay buffer population)
+  vec_game: "tetris"        # ALE ROM id used by AtariVectorEnv
+  vec_num_envs: 2
+  vec_frameskip: 1
+  vec_grayscale: true
+  vec_stack_num: 4
+  vec_img_height: 84
+  vec_img_width: 84
+  vec_maxpool: true
+  vec_reward_clipping: false
+  vec_noop_max: 30
+  vec_use_fire_reset: false
+  vec_episodic_life: false
+
+#reward_wrapper:
+#  reward_scale: 1.0
+#  bonus_multiplier: 5.0
+#  termination_penalty: -100.0
+#revised rewards. Now giving small survival reward and smaller termination penalty.
+reward_wrapper:
+  reward_scale: 1.0
+  score_weight: 5.0
+  survival_reward: 0.2
+  termination_penalty: -50.0
+
+training:
+  learning_rate: 1.0e-4
+  gamma: 0.99
+  epsilon_start: 1.0
+  epsilon_end: 0.01
+  epsilon_decay: 50000          # steps for epsilon decay (even if not used yet)
+
+  batch_size: 32
+  replay_buffer_capacity: 30000 # reduced from 100000 to save RAM
+  num_initial_steps: 5000       # for each learner’s replay buffer via AtariVectorEnv
+  training_iters: 5000000         # interleaved training loop iterations
+  target_update_frequency: 1000 # sync target nets every N learner steps
+
+paths:
+  recordings_dir: "/tmp/166/recordings"
+  recordings_dir_custom: "/tmp/custom_rewards_recordings"
+  models_dir: "models"
+
+  video_single_init: "videos/single_DQN"
+  video_double_init: "videos/double_DQN"
+  video_single_final: "videos/single_DQN_final"
+  video_double_final: "videos/double_DQN_final"
+
+device:
+  # "auto" picks CUDA if available, else CPU
+  use: "auto"
