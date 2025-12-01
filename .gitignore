@@ -162,10 +162,3 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-/50k_steps/
-/500k_random_sampling/
-/100k_eps_greed/
-/500k_eps_greed/
-/500k__side_ratio/
-/50k_side_ratio/
-/500k_prog_penalty/
