@@ -408,7 +408,7 @@ def main():
         input_shape, num_actions, device
     )
 
-    # Initial quick evaluation + videos (optional)
+    # Initial quick evaluation + videos (optional)-
     evaluate_and_record(
         single_DQN,
         env_cfg,
