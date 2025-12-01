@@ -1,21 +1,15 @@
-Insert clean description of repo/methodologies/etc here:
+## Single DQN — 500k Episodes (Random Sampling)
+![Single DQN 500k](tetris_gifs/singledqn_random.gif)  
+[Full Video](https://drive.google.com/file/d/1CLyqZOrFKBArTFBeU1WJ0W5UIrJjS-tL/view?usp=sharing)
 
-<h3>Single DQN — 500k Episodes (Random Sampling)</h3>
-<video width="480" controls>
-  <source src="https://raw.githubusercontent.com/luisaespinoza/CSCI166-project/main/500k_random_sampling/videos/single_DQN_final/single_DQN_episode_final-episode-0.mp4" type="video/mp4">
-</video>
+## Double DQN — 500k Episodes (Random Sampling)
+![Double DQN 500k](tetris_gifs/dqn_random.gif)  
+[Full Video](https://drive.google.com/file/d/1QJGR2Yj-QpTsmAxyrF_7eD3hYuOaA-fk/view?usp=sharing).
 
-<h3>Double DQN — 500k Episodes (Random Sampling)</h3>
-<video width="480" controls>
-  <source src="https://raw.githubusercontent.com/luisaespinoza/CSCI166-project/main/500k_random_sampling/videos/double_DQN_final/double_DQN_episode_final-episode-0.mp4" type="video/mp4">
-</video>
+## Single DQN — 2M Episodes (Epsilon-Greedy)
+![Single DQN 2M](tetris_gifs/singledqn_epsilon.gif)  
+[Full Video](https://drive.google.com/file/d/1uxoF7FxUF459tFhoU96hrKLGH5I-sLjO/view?usp=sharing)
 
-<h3>Single DQN — 2M Episodes (Epsilon-Greedy)</h3>
-<video width="480" controls>
-  <source src="https://raw.githubusercontent.com/luisaespinoza/CSCI166-project/main/2M_prog_penalty/videos/single_DQN_final/single_DQN_episode_final-episode-0.mp4" type="video/mp4">
-</video>
-
-<h3>Double DQN — 2M Episodes (Epsilon-Greedy)</h3>
-<video width="480" controls>
-  <source src="https://raw.githubusercontent.com/luisaespinoza/CSCI166-project/main/2M_prog_penalty/videos/double_DQN_final/double_DQN_episode_final-episode-0.mp4" type="video/mp4">
-</video>
+## Double DQN — 2M Episodes (Epsilon-Greedy)
+![Double DQN 2M](tetris_gifs/double_dqn_epsilon.gif)  
+[Full Video](https://drive.google.com/file/d/1WjvGx_EMZc3mgHx5z55HEJ9zJ_KL_ty9/view?usp=sharing)
